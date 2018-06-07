@@ -4,7 +4,7 @@
 #![cfg_attr(feature = "dev", feature(plugin))]
 #![cfg_attr(feature = "dev", plugin(clippy))]
 
-extern crate emerald_rs as emerald;
+extern crate webchain_rs as emerald;
 extern crate env_logger;
 extern crate hex;
 extern crate hyper;
