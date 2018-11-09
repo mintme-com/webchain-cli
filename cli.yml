@@ -1,4 +1,4 @@
-name: emerald
+name: emerald-vault
 about: Command-line interface for Emerald platform
 
 settings:
@@ -36,15 +36,35 @@ subcommands:
             help: Port for RPC server
             takes_value: true
             default_value: "1920"
-    - mnemonic:
-        about: Create mnemonic phrase according to BIP39 spec
     - balance:
-        about: Request account's balance from ethereum node through RPC
-        args:
+            about: Request account's balance from ethereum node through RPC
+            args:
             - address:
                 help: Account address
                 required: true
                 takes_value: true
+            - upstream:
+                short: u
+                long: upstream
+                help: Network address for a remote ethereum node with RPC endpoint
+                takes_value: true
+    - mnemonic:
+        about: Create mnemonic phrase according to BIP39 spec
+    - nonce:
+        about: Get `nonce` value for selected address
+        args:
+        - address:
+            help: Address of account
+            required: true
+            takes_value: true
+        - upstream:
+            short: u
+            long: upstream
+            help: Network address for a remote ethereum node with RPC endpoint
+            required: true
+            takes_value: true
+        - hex:
+            help: Print nonce in hexadecimal format
     - transaction:
         about: Transaction related commands
         subcommands:
@@ -191,6 +211,6 @@ subcommands:
                 required: true
                 takes_value: true
             - all:
-                help: Show hidden accounts
+                help: Export all accounts
                 short: a
                 global: false

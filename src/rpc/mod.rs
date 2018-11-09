@@ -1,13 +1,13 @@
 //! # JSON RPC module
 
-mod http;
+mod comm;
 mod serialize;
 
-pub use self::http::{ClientMethod, MethodParams, RpcConnector};
-use jsonrpc_core::{Params, Value};
+pub use self::comm::{ClientMethod, MethodParams, RpcConnector};
 use cmd::Error;
-use hex::ToHex;
 use emerald::Address;
+use hex::ToHex;
+use jsonrpc_core::{Params, Value};
 
 /// Get nonce for address from remote node
 ///

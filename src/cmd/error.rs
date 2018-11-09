@@ -1,17 +1,19 @@
 //! # Errors for command executor
 
-use std::{error, fmt, io, str, string};
 use emerald::storage::KeystoreError;
 use emerald::{self, keystore};
-use std::net::AddrParseError;
-use rustc_serialize::json;
-use reqwest;
-use std::num;
 use hex;
+use http;
+use hyper;
+use reqwest;
+use serde_json;
+use std::net::AddrParseError;
+use std::num;
+use std::{error, fmt, io, str, string};
 use url;
 
 macro_rules! from_err {
-    ($x: ty) => {
+    ($x:ty) => {
         impl From<$x> for Error {
             fn from(err: $x) -> Self {
                 Error::ExecError(err.to_string())
@@ -38,13 +40,15 @@ from_err!(KeystoreError);
 from_err!(string::ParseError);
 from_err!(keystore::Error);
 from_err!(keystore::SerializeError);
-from_err!(json::EncoderError);
 from_err!(reqwest::Error);
 from_err!(num::ParseIntError);
 from_err!(hex::FromHexError);
 from_err!(emerald::Error);
 from_err!(emerald::mnemonic::Error);
 from_err!(url::ParseError);
+from_err!(serde_json::Error);
+from_err!(hyper::error::Error);
+from_err!(http::uri::InvalidUri);
 
 impl fmt::Display for Error {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {

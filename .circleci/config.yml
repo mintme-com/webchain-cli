@@ -14,16 +14,19 @@ jobs:
               curl https://sh.rustup.rs -sSf | sh -s -- -y --default-toolchain stable
               brew install bats
               brew install gpg2
-#      - run:
-#          name: Tests
-#          command: |
+
+      - run:
+          name: Unit tests
+          command: |
+                export PATH=$PATH:$HOME/.cargo/bin
+                cargo test
 
       - run:
           name: Build
           command: |
               export PATH=$PATH:$HOME/.cargo/bin:$PWD/janusbin
               cargo build --all --verbose --release
-              cp ./target/release/emerald "$HOME/.cargo/bin/"
+              cp ./target/release/emerald-vault "$HOME/.cargo/bin/"
               bats cli.bats
 
       - deploy:

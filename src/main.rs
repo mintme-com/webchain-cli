@@ -4,7 +4,7 @@
 #![cfg_attr(feature = "dev", feature(plugin))]
 #![cfg_attr(feature = "dev", plugin(clippy))]
 
-extern crate webchain_rs as emerald;
+extern crate emerald_rs as emerald;
 extern crate env_logger;
 extern crate hex;
 extern crate hyper;
@@ -13,9 +13,9 @@ extern crate jsonrpc_core;
 extern crate lazy_static;
 #[macro_use]
 extern crate log;
+extern crate http;
 extern crate reqwest;
 extern crate rpassword;
-extern crate rustc_serialize;
 extern crate serde;
 #[macro_use]
 extern crate serde_derive;
@@ -25,14 +25,14 @@ extern crate url;
 extern crate clap;
 
 mod cmd;
-mod rpc;
 mod indicator;
+mod rpc;
 
+use clap::App;
 use env_logger::LogBuilder;
 use log::LogRecord;
-use std::process::*;
-use clap::App;
 use std::env;
+use std::process::*;
 
 const VERSION: Option<&'static str> = option_env!("CARGO_PKG_VERSION");
 

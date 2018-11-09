@@ -1,10 +1,10 @@
 //! # Serialize JSON RPC parameters
 
 use super::{ClientMethod, MethodParams};
-use serde::{Serialize, Serializer};
-use std::sync::Arc;
-use std::sync::atomic::{AtomicUsize, Ordering};
 use jsonrpc_core::Params;
+use serde::{Serialize, Serializer};
+use std::sync::atomic::{AtomicUsize, Ordering};
+use std::sync::Arc;
 
 lazy_static! {
     static ref REQ_ID: Arc<AtomicUsize> = Arc::new(AtomicUsize::new(1));
@@ -27,7 +27,6 @@ impl<'a> Serialize for MethodParams<'a> {
             ClientMethod::EthGasPrice => serialize("eth_gasPrice", self.1, s),
             ClientMethod::EthEstimateGas => serialize("eth_etsimateGas", self.1, s),
             ClientMethod::EthGetTxCount => serialize("eth_getTransactionCount", self.1, s),
-            ClientMethod::EthGetTxByHash => serialize("eth_getTransactionByHash", self.1, s),
             ClientMethod::EthSendRawTransaction => serialize("eth_sendRawTransaction", self.1, s),
             ClientMethod::EthGetBalance => serialize("eth_getBalance", self.1, s),
         }

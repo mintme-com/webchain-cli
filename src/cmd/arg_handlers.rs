@@ -1,16 +1,17 @@
 //! # Helpers for command execution
 
 use super::Error;
-use super::{align_bytes, to_arr, to_even_str, trim_hex, Address, ArgMatches, KdfDepthLevel,
-            PrivateKey, DEFAULT_UPSTREAM};
-use std::str::FromStr;
-use std::env;
+use super::{
+    align_bytes, to_arr, to_even_str, trim_hex, Address, ArgMatches, KdfDepthLevel, PrivateKey,
+    DEFAULT_UPSTREAM,
+};
 use hex::FromHex;
+use reqwest::Url;
 use rpassword;
 use rpc::{self, RpcConnector};
-use hyper::Url;
-use hyper::client::IntoUrl;
+use std::env;
 use std::net::SocketAddr;
+use std::str::FromStr;
 
 /// Environment variables used to change default variables
 #[derive(Default, Debug)]
@@ -50,7 +51,8 @@ impl EnvVars {
 
 /// Parse raw hex string arguments from user
 fn parse_arg(raw: &str) -> Result<String, Error> {
-    let s = raw.parse::<String>()
+    let s = raw
+        .parse::<String>()
         .and_then(|s| Ok(to_even_str(trim_hex(&s))))?;
 
     if s.is_empty() {
@@ -111,7 +113,7 @@ pub fn get_gas_limit(matches: &ArgMatches, env: &EnvVars) -> Result<u64, Error> 
     u64::from_str_radix(trim_hex(&gas), 16).map_err(Error::from)
 }
 
-/// Parse address from command-line argument
+/// Get nonce value for provided address
 ///
 /// # Arguments:
 ///
@@ -151,7 +153,7 @@ pub fn get_upstream(matches: &ArgMatches) -> Result<RpcConnector, Error> {
     let ups = matches.value_of("upstream").unwrap_or(DEFAULT_UPSTREAM);
     parse_socket(ups)
         .or_else(|_| parse_url(ups))
-        .and_then(RpcConnector::new)
+        .and_then(|url| Ok(RpcConnector { url }))
 }
 
 /// Parse address from command-line argument
@@ -184,21 +186,27 @@ pub fn parse_value(s: &str) -> Result<[u8; 32], Error> {
 
 /// Parse transaction data
 pub fn parse_data(s: &str) -> Result<Vec<u8>, Error> {
-    let data = to_even_str(trim_hex(s));
-    Vec::from_hex(data).map_err(Error::from)
+    match s.len() {
+        0 => Ok(vec![]),
+        _ => {
+            let data = parse_arg(s)?;
+            Vec::from_hex(data).map_err(Error::from)
+        }
+    }
 }
 
 /// Parse URL for ethereum node
 pub fn parse_url(s: &str) -> Result<Url, Error> {
-    let addr = Url::parse(s)?;
+    let addr: Url = s.parse()?;
     Ok(addr)
 }
 
 /// Parse socket address for ethereum node
 pub fn parse_socket(s: &str) -> Result<Url, Error> {
-    let addr = s.parse::<SocketAddr>()
+    let addr = s
+        .parse::<SocketAddr>()
         .map_err(Error::from)
-        .and_then(|a| format!("https://{}", a).into_url().map_err(Error::from))?;
+        .and_then(|a| format!("https://{}", a).parse().map_err(Error::from))?;
 
     Ok(addr)
 }
