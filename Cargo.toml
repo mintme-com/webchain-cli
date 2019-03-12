@@ -1,6 +1,7 @@
 [package]
 name = "webchain-cli"
 version = "0.22.0"
+authors = ["Webchain Network"]
 description = "Console utility for secure account management"
 homepage = "https://webchain.network"
 repository = "https://github.com/webchain-network/webchain-cli"
